@@ -1,4 +1,5 @@
-#' Recode variables
+#' Recode all numeric codes in a data frame to categorical labels
+#' using a dictionary
 #'
 #' @description
 #' Categorical variables are often entered in databases as numbers,
@@ -17,16 +18,31 @@
 #' @param dataset Any data frame with categorical variables
 #' @param dictionary A data frame that serves as a dictionary,
 #' mapping each numeric code to its corresponding category string.
-#' @param id You don't want to recode the columns that
+#' @param ignore_colnames You don't want to recode the columns that
 #' serves as the id of the data. You can specify them here.
+#' @param var_colname Name of the dictionary column containing the
+#' dataset variable names. To understand the dataset format,
+#'  refer to the documentation for the `df` dataset.
+#' @param num_colname Name of the dictionary column containing
+#' the numeric codes for the categories. To understand the dataset format,
+#' refer to the documentation for the `df` dataset.
+#' @param str_colname Name of the dictionary column containing the
+#' labels or categories as character strings. To understand the dataset
+#' format, refer to the documentation for the `df` dataset.
 #'
-#' @return A data frame identical to `data`,
+#' @return A data frame identical to the original dataset,
 #' but with numeric category values replaced by
-#' their corresponding string in the specified columns.
+#' their corresponding label in the specified columns.
 #'
 #' @export
 #'
 #' @examples
+#' recode_vars(data = df,
+#'             ignore_colnames = c(id, age),
+#'             dictionary = dict_df,
+#'             var_colname = variable,
+#'             num_colname = level_num,
+#'             str_colname = level_str)
 recode_vars <- function(dataset,
                         dictionary,
                         ignore_colnames,
@@ -38,41 +54,24 @@ recode_vars <- function(dataset,
     select(where( ~ is.numeric(.)),
            -{{ignore_colnames}})
 
-
-
-
   vars_recode <- colnames(data_recode)
-# for(i in vars_recode){
-#   # filtro el diccionario asi despues se va con el join
-#   dict_sub <- dictionary |>
-#     dplyr::filter({{var_colname}} == i) |>
-#     select({{str_colname}}, {{num_colname}})
-#
-#   data_recode_complete <- dataset |>
-#     left_join(dictionary, by = c({{i}} = {{num_colname}}))
-#
-# }
-#
 
-    c()
-  # for (i in vars_recode) {
-  #
-   i = vars_recode[1]
+   for (i in vars_recode) {
+
      key <-  dictionary |>
        dplyr::filter({{var_colname}} == i) |>
        dplyr::select({{num_colname}},
                      {{str_colname}})
-  #
-  #   # to use the function match, better convert all to character
-     data_recode2 <- data_recode[, i] #|>
-      # dplyr::mutate(across(all_of(i), as.character)) |>
-      # pull()
 
-     # select the correct labels
-     data_recode_var <- key$label_axis[match(data_recode2, key$name_axis)]
+     data_recode2 <- data_recode[, i]
+
+     keystr <- key |> select({{str_colname}}) |> pull()
+     keynum <- key |> select({{num_colname}}) |> pull()
+
+     # match the
+     data_recode_var <- keystr[match(data_recode2, keynum)]
      dataset[, i]  <- data_recode_var
-  #
-  # }
- # return(dataset)
-     return(data_recode2)
+
+  }
+  return(dataset)
 }
