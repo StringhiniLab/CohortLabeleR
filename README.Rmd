@@ -13,6 +13,8 @@ knitr::opts_chunk$set(
 )
 data(df)
 data(dict_df)
+data(df_missing)
+data(dict_df_missing)
 ```
 
 # STATAtransfer
@@ -70,7 +72,7 @@ head(dict_df)
 # recoding the variables
 df_recoded <- recode_vars(data = df,
             # specify here other numeric columns you would like to ignore
-            ignore_colnames = c(id, age), 
+            ignore_columns = c(id, age), 
             dictionary = dict_df,
             # dictionary column with the variable names
             var_colname = variable, # dictionary column with the variables
@@ -84,6 +86,36 @@ head(df_recoded)
 purrr::map(data = df_recoded, colnames(df_recoded)[4:6], barplot)
 ```
 
-### 2. Add labels to save the dataset for STATA
+### 2. `replace_missing_with_na()`
 
+This function reads the dictionary and detects observations that are coded as missing. These missing values are represented numerically, with values like -99, which are clearly not valid results.
+
+Databases such as CLSA, encode these missing values  distinguishing the reasons for the missing data and assigning different numeric codes to each case.
+It is not the same to say that the person preferred not to answer the survey as it is to say that the survey was never conducted.
+This means that there are many numeric codes that can represent a missing value.
+
+The goal of this function is to convert all of the missing values of the categorical variables coded as numbers of a data frame to `NA`. This makes it much easier to detect the total amount of missing data per variable, regardless of the origin of the missing values.
+
+```{r}
+# There are missing values in blood_pressure_category and cholesterol_level
+df_missing
+```
+```{r}
+df_missing_NA <-  replace_missing_with_na(dataset = df_missing,
+                         ignore_columns = c(id, age),
+                         dictionary = dict_df_missing,
+                         var_colname = variable,
+                         num_colname = level_num,
+                         missing_colname = missing)
+
+df_missing_NA
+```
+
+Now, let's estimate the percentage of data that is missing.
+
+```{r}
+# 2 of 10 observations are missing for cholesterol_level (20%)
+# 1 of 10 observations are missing for blood_pressure_category (10%)
+colMeans(is.na.data.frame(df_missing_NA))*100
+```
 

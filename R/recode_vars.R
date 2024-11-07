@@ -15,11 +15,12 @@
 #' as it avoids the need to manually replace axis labels
 #' for each plot.
 #'
-#' @param dataset Any data frame with categorical variables
+#' @param dataset Any data frame with categorical variables coded as numbers.
 #' @param dictionary A data frame that serves as a dictionary,
 #' mapping each numeric code to its corresponding category string.
-#' @param ignore_colnames You don't want to recode the columns that
-#' serves as the id of the data. You can specify them here.
+#' @param ignore_columns You don't want to modify the columns that
+#' serves as the id of the data or numeric variables
+#' that are not categorical variables. You can specify them here.
 #' @param var_colname Name of the dictionary column containing the
 #' dataset variable names. To understand the dataset format,
 #'  refer to the documentation for the `df` dataset.
@@ -38,21 +39,21 @@
 #'
 #' @examples
 #' recode_vars(data = df,
-#'             ignore_colnames = c(id, age),
+#'             ignore_columns = c(id, age),
 #'             dictionary = dict_df,
 #'             var_colname = variable,
 #'             num_colname = level_num,
 #'             str_colname = level_str)
 recode_vars <- function(dataset,
                         dictionary,
-                        ignore_colnames,
+                        ignore_columns,
                         var_colname,
                         num_colname,
                         str_colname) {
   # selection of variables that need factor categories label replacement
-  data_recode <-  dataset |>
+  data_recode <-  as.data.frame(dataset) |> # in case is a tibble
     select(where( ~ is.numeric(.)),
-           -{{ignore_colnames}})
+           -{{ignore_columns}})
 
   vars_recode <- colnames(data_recode)
 

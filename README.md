@@ -95,7 +95,7 @@ head(dict_df)
 # recoding the variables
 df_recoded <- recode_vars(data = df,
             # specify here other numeric columns you would like to ignore
-            ignore_colnames = c(id, age), 
+            ignore_columns = c(id, age), 
             dictionary = dict_df,
             # dictionary column with the variable names
             var_colname = variable, # dictionary column with the variables
@@ -130,4 +130,70 @@ purrr::map(data = df_recoded, colnames(df_recoded)[4:6], barplot)
 
 <img src="man/figures/README-unnamed-chunk-4-3.png" width="100%" />
 
-### 2. Add labels to save the dataset for STATA
+### 2. `replace_missing_with_na()`
+
+This function reads the dictionary and detects observations that are
+coded as missing. These missing values are represented numerically, with
+values like -99, which are clearly not valid results.
+
+Databases such as CLSA, encode these missing values distinguishing the
+reasons for the missing data and assigning different numeric codes to
+each case. It is not the same to say that the person preferred not to
+answer the survey as it is to say that the survey was never conducted.
+This means that there are many numeric codes that can represent a
+missing value.
+
+The goal of this function is to convert all of the missing values of the
+categorical variables coded as numbers of a data frame to `NA`. This
+makes it much easier to detect the total amount of missing data per
+variable, regardless of the origin of the missing values.
+
+``` r
+# There are missing values in blood_pressure_category and cholesterol_level
+df_missing
+#>    id gender age blood_pressure_category glucose_level cholesterol_level
+#> 1   1   Male  25                       1             1                 1
+#> 2   2 Female  30                       2             4                 3
+#> 3   3   Male  22                       1             2             -9999
+#> 4   4   Male  35                       3             3                 2
+#> 5   5 Female  40                       1             1                 3
+#> 6   6   Male  28                       4             4                 2
+#> 7   7 Female  32                       1             1                 1
+#> 8   8   Male  27                       2             1                 1
+#> 9   9 Female  45                   -9999             4                 3
+#> 10 10   Male  29                       1             1             -8888
+```
+
+``` r
+df_missing_NA <-  replace_missing_with_na(dataset = df_missing,
+                         ignore_columns = c(id, age),
+                         dictionary = dict_df_missing,
+                         var_colname = variable,
+                         num_colname = level_num,
+                         missing_colname = missing)
+
+df_missing_NA
+#>    id gender age blood_pressure_category glucose_level cholesterol_level
+#> 1   1   Male  25                       1             1                 1
+#> 2   2 Female  30                       2             4                 3
+#> 3   3   Male  22                       1             2                NA
+#> 4   4   Male  35                       3             3                 2
+#> 5   5 Female  40                       1             1                 3
+#> 6   6   Male  28                       4             4                 2
+#> 7   7 Female  32                       1             1                 1
+#> 8   8   Male  27                       2             1                 1
+#> 9   9 Female  45                      NA             4                 3
+#> 10 10   Male  29                       1             1                NA
+```
+
+Now, let’s estimate the percentage of data that is missing.
+
+``` r
+# 2 of 10 observations are missing for cholesterol_level (20%)
+# 1 of 10 observations are missing for blood_pressure_category (10%)
+colMeans(is.na.data.frame(df_missing_NA))*100
+#>                      id                  gender                     age 
+#>                       0                       0                       0 
+#> blood_pressure_category           glucose_level       cholesterol_level 
+#>                      10                       0                      20
+```
