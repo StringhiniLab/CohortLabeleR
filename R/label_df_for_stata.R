@@ -1,12 +1,24 @@
-#' Add labels readable by STATA to all the columns automatically
+#' Add variable and value labels compatible with STATA
+#' to a complete dataset
 #'
-#' There are 4 elements that are read in STATA
-#' The variable name
-#' The variable label
-#' The value code
-#' The value label
+#' `label_df_for_STATA()` allows you to add labels to variable names
+#' and categorical numeric variables observations (called here "values").
+#' The function applies labels to the entire dataset
+#' by reading information from a dictionary.
+#' For an example of the required dictionary format,
+#' check the dataset `dict_df_var_label` included as part
+#' of this package.
 #'
-#' Note: is important that you have labels for all the variables
+#' For variable name labels,
+#' the function `label_df_for_STATA()` fills in missing labels
+#' from the dictionary with empty labels.
+#' This means that the function won’t fail due to missing labels.
+#'
+#' For value labels,
+#' you can specify the numeric variables
+#' that don't need labeling as they are not categorical
+#' (e.g., `id` and `age`).
+#' Note that STATA only reads labels for numeric variables.
 #'
 #' @param dataset Any data frame with categorical variables coded as numbers.
 #' @param dictionary A data frame that serves as a dictionary,

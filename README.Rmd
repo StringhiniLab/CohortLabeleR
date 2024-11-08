@@ -9,7 +9,7 @@ knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>",
   fig.path = "man/figures/README-",
-  out.width = "100%"
+  out.width = "50%"
 )
 data(df)
 data(dict_df)
@@ -20,9 +20,12 @@ data(dict_df_missing)
 # CohortLabeleR
 
 <!-- badges: start -->
+[![Lifecycle: experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html#experimental)
 <!-- badges: end -->
 
-CohortLabeleR provides functions to easily add STATA-style variable and cell labels to entire datasets in R. It also includes tools for quick variable recoding, making it easier to work with categorical numeric variables commonly found in longitudinal cohort studies.
+CohortLabeleR provides functions to easily add STATA-style variable and cell labels to entire data frames in R. It also includes tools for quick variable recoding, making it easier to work with categorical numeric variables commonly found in longitudinal cohort studies.
+
+## Introduction
 
 ## Installation
 
@@ -83,6 +86,7 @@ df_recoded <- recode_vars(data = df,
             str_colname = level_str)
 head(df_recoded)
 ```
+
 ```{r}
 purrr::map(data = df_recoded, colnames(df_recoded)[4:6], barplot)
 ```
@@ -102,7 +106,7 @@ The goal of this function is to convert all of the missing values of the categor
 df_missing
 ```
 ```{r}
-df_missing_NA <-  replace_missing_with_na(dataset = df_missing,
+df_missing_NA <- replace_missing_with_na(dataset = df_missing,
                          ignore_columns = c(id, age),
                          dictionary = dict_df_missing,
                          var_colname = variable,
@@ -118,5 +122,36 @@ Now, let's estimate the percentage of data that is missing.
 # 2 of 10 observations are missing for cholesterol_level (20%)
 # 1 of 10 observations are missing for blood_pressure_category (10%)
 colMeans(is.na.data.frame(df_missing_NA))*100
+```
+
+### 3. `label_df_for_STATA()`
+
+To open a database in a format compatible with STATA, it is advisable that:
+
+1. **The variables have labels**.  
+    This allows information that is typically not encoded in the variable name, such as units or more detailed and human readable text, to be associated with each data column.
+    
+2. **The numeric values of categorical variables have labels**.  
+    For variables reported as categorical and coded as numbers, it is possible to assign labels. This way, it is easy to visualize what each category level represents in STATA.
+
+The function `label_df_for_STATA()` reads the data frame and the provided dictionary, and adds a variable label to all column names, as well as a label to all numeric variables reported as categorical. It is possible to exclude those numeric variables without levels using the `ignore_columns` argument.
+
+In this way, the data frame can be saved as a `.dta` file and easily opened in STATA with all the important information needed for the analysis.
+
+
+```{r}
+df_stata <- label_df_for_STATA(dataset = df,
+                   dictionary = dict_df_var_label,
+                   ignore_columns = c("id", "age"),
+                   var_label = var_label , # variable label
+                   var_colname = variable, # variable colname
+                   num_colname = level_num, # code number
+                   str_colname = level_str) # code label
+
+# You can recognize the variable labels (as attributes) and code labels (as labels) when checking the data frame structure
+str(df_stata)
+
+# save the file in STATA format
+# haven::write_dta(df_stata, "data/2020-11-04_df_stata.dta")
 ```
 

@@ -1,6 +1,6 @@
 Package: CohortLabeleR
 Type: Package
-Title: CohortLabeleR provides functions to add variable labels and cell labels to entire datasets, as used in STATA, and simplifies variable recoding in R
+Title: CohortLabeleR provides functions to add variable labels and cell labels to entire data frames, as used in STATA, and simplifies variable recoding in R
 Version: 0.1.0
 Author: Florencia D'Andrea
 Maintainer: Florencia D'Andrea <florencia.dandrea@gmail.com>

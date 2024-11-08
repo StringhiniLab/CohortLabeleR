@@ -2,7 +2,8 @@
 % Please edit documentation in R/label_df_for_stata.R
 \name{label_df_for_STATA}
 \alias{label_df_for_STATA}
-\title{Add labels readable by STATA to all the columns automatically}
+\title{Add variable and value labels compatible with STATA
+to all variables in the dataset}
 \usage{
 label_df_for_STATA(
   dataset,
@@ -48,14 +49,23 @@ refer to the documentation for the `dict_df_var_label` dataset.}
 The original dataset with variable and code labels
 }
 \description{
-There are 4 elements that are read in STATA
-The variable name
-The variable label
-The value code
-The value label
+`label_df_for_STATA()` allows you to add labels to variable names
+and categorical numeric variables observations (called here "values").
+The function applies labels to the entire dataset
+by reading information from a dictionary.
+For an example of the required dictionary format,
+see the dataset [dict_df_var_label].
 }
 \details{
-Note: is important that you have labels for all the variables
+For variable name labels,
+the function `label_df_for_STATA()` fills in missing labels
+from the dictionary with empty labels.
+This means that the function won’t fail due to missing labels.
+
+For value labels,
+you can specify the numeric variables (e.g., id and age)
+that don't need labeling as they are not categorical.
+Note that STATA only reads labels for numeric variables.
 }
 \examples{
 

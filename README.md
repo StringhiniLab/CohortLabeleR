@@ -4,6 +4,9 @@
 # CohortLabeleR
 
 <!-- badges: start -->
+
+[![Lifecycle:
+experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html#experimental)
 <!-- badges: end -->
 
 CohortLabeleR provides functions to easily add STATA-style variable and
@@ -66,17 +69,17 @@ purrr::map(colnames(df)[4:6], barplot)
 #> [[1]]
 ```
 
-<img src="man/figures/README-unnamed-chunk-2-1.png" width="100%" />
+<img src="man/figures/README-unnamed-chunk-2-1.png" width="50%" />
 
     #> 
     #> [[2]]
 
-<img src="man/figures/README-unnamed-chunk-2-2.png" width="100%" />
+<img src="man/figures/README-unnamed-chunk-2-2.png" width="50%" />
 
     #> 
     #> [[3]]
 
-<img src="man/figures/README-unnamed-chunk-2-3.png" width="100%" /> The
+<img src="man/figures/README-unnamed-chunk-2-3.png" width="50%" /> The
 category levels of each variable are not possible to recognize. To fix
 this, you can use `recode_vars` to replace the labels directly, using
 the dictionary as a reference.
@@ -118,17 +121,17 @@ purrr::map(data = df_recoded, colnames(df_recoded)[4:6], barplot)
 #> [[1]]
 ```
 
-<img src="man/figures/README-unnamed-chunk-4-1.png" width="100%" />
+<img src="man/figures/README-unnamed-chunk-4-1.png" width="50%" />
 
     #> 
     #> [[2]]
 
-<img src="man/figures/README-unnamed-chunk-4-2.png" width="100%" />
+<img src="man/figures/README-unnamed-chunk-4-2.png" width="50%" />
 
     #> 
     #> [[3]]
 
-<img src="man/figures/README-unnamed-chunk-4-3.png" width="100%" />
+<img src="man/figures/README-unnamed-chunk-4-3.png" width="50%" />
 
 ### 2. `replace_missing_with_na()`
 
@@ -165,7 +168,7 @@ df_missing
 ```
 
 ``` r
-df_missing_NA <-  replace_missing_with_na(dataset = df_missing,
+df_missing_NA <- replace_missing_with_na(dataset = df_missing,
                          ignore_columns = c(id, age),
                          dictionary = dict_df_missing,
                          var_colname = variable,
@@ -196,4 +199,61 @@ colMeans(is.na.data.frame(df_missing_NA))*100
 #>                       0                       0                       0 
 #> blood_pressure_category           glucose_level       cholesterol_level 
 #>                      10                       0                      20
+```
+
+### 3. `label_df_for_STATA()`
+
+To open a database in a format compatible with STATA, it is advisable
+that:
+
+1.  **The variables have labels**.  
+    This allows information that is typically not encoded in the
+    variable name, such as units or more detailed and human readable
+    text, to be associated with each data column.
+
+2.  **The numeric values of categorical variables have labels**.  
+    For variables reported as categorical and coded as numbers, it is
+    possible to assign labels. This way, it is easy to visualize what
+    each category level represents in STATA.
+
+The function `label_df_for_STATA()` reads the data frame and the
+provided dictionary, and adds a variable label to all column names, as
+well as a label to all numeric variables reported as categorical. It is
+possible to exclude those numeric variables without levels using the
+`ignore_columns` argument.
+
+In this way, the data frame can be saved as a `.dta` file and easily
+opened in STATA with all the important information needed for the
+analysis.
+
+``` r
+df_stata <- label_df_for_STATA(dataset = df,
+                   dictionary = dict_df_var_label,
+                   ignore_columns = c("id", "age"),
+                   var_label = var_label , # variable label
+                   var_colname = variable, # variable colname
+                   num_colname = level_num, # code number
+                   str_colname = level_str) # code label
+
+# You can recognize the variable labels (as attributes) and code labels (as labels) when checking the data frame structure
+str(df_stata)
+#> 'data.frame':    10 obs. of  6 variables:
+#>  $ id                     : int  1 2 3 4 5 6 7 8 9 10
+#>   ..- attr(*, "label")= chr "Patient Id"
+#>  $ gender                 : Factor w/ 2 levels "Male","Female": 1 2 1 1 2 1 2 1 2 1
+#>   ..- attr(*, "label")= chr "Gender"
+#>  $ age                    : num  25 30 22 35 40 28 32 27 45 29
+#>   ..- attr(*, "label")= chr "Age (years)"
+#>  $ blood_pressure_category: dbl+lbl [1:10] 1, 2, 1, 3, 1, 4, 1, 2, 3, 1
+#>    ..@ labels: Named num  1 2 3 4
+#>    .. ..- attr(*, "names")= chr [1:4] "1" "2" "3" "4"
+#>  $ glucose_level          : dbl+lbl [1:10] 1, 4, 1, 3, 1, 4, 1, 1, 4, 1
+#>    ..@ labels: Named num  1 2 3 4
+#>    .. ..- attr(*, "names")= chr [1:4] "1" "2" "3" "4"
+#>  $ cholesterol_level      : dbl+lbl [1:10] 1, 3, 1, 2, 3, 2, 1, 1, 3, 2
+#>    ..@ labels: Named num  1 2 3
+#>    .. ..- attr(*, "names")= chr [1:3] "1" "2" "3"
+
+# save the file in STATA format
+# haven::write_dta(df_stata, "data/2020-11-04_df_stata.dta")
 ```
