@@ -1,7 +1,7 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-# CohortLabeleR
+# CohortLabeleR <img src="logo.png" align="right" height="150"/>
 
 <!-- badges: start -->
 
@@ -10,9 +10,11 @@ experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](h
 <!-- badges: end -->
 
 CohortLabeleR provides functions to easily add STATA-style variable and
-cell labels to entire datasets in R. It also includes tools for quick
+cell labels to entire data frames in R. It also includes tools for quick
 variable recoding, making it easier to work with categorical numeric
 variables commonly found in longitudinal cohort studies.
+
+## Introduction
 
 ## Installation
 
@@ -28,7 +30,7 @@ devtools::install_github("StringhiniLab/CohortLabeleR")
 
 This package consists of three functions.
 
-### 1. `recode_vars()`.
+### 1. `recode_vars()`
 
 Many datasets, such as CLSA, use numeric codes for categorical
 variables. This can make it harder to label axes when you want to
@@ -69,20 +71,20 @@ purrr::map(colnames(df)[4:6], barplot)
 #> [[1]]
 ```
 
-<img src="man/figures/README-unnamed-chunk-2-1.png" width="50%" />
+<img src="man/figures/README-unnamed-chunk-2-1.png" width="70%" style="display: block; margin: auto;" />
 
     #> 
     #> [[2]]
 
-<img src="man/figures/README-unnamed-chunk-2-2.png" width="50%" />
+<img src="man/figures/README-unnamed-chunk-2-2.png" width="70%" style="display: block; margin: auto;" />
 
     #> 
     #> [[3]]
 
-<img src="man/figures/README-unnamed-chunk-2-3.png" width="50%" /> The
-category levels of each variable are not possible to recognize. To fix
-this, you can use `recode_vars` to replace the labels directly, using
-the dictionary as a reference.
+<img src="man/figures/README-unnamed-chunk-2-3.png" width="70%" style="display: block; margin: auto;" />
+The category levels of each variable are not possible to recognize. To
+fix this, you can use `recode_vars` to replace the labels directly,
+using the dictionary as a reference.
 
 ``` r
 # dictionary
@@ -121,17 +123,17 @@ purrr::map(data = df_recoded, colnames(df_recoded)[4:6], barplot)
 #> [[1]]
 ```
 
-<img src="man/figures/README-unnamed-chunk-4-1.png" width="50%" />
+<img src="man/figures/README-unnamed-chunk-4-1.png" width="70%" style="display: block; margin: auto;" />
 
     #> 
     #> [[2]]
 
-<img src="man/figures/README-unnamed-chunk-4-2.png" width="50%" />
+<img src="man/figures/README-unnamed-chunk-4-2.png" width="70%" style="display: block; margin: auto;" />
 
     #> 
     #> [[3]]
 
-<img src="man/figures/README-unnamed-chunk-4-3.png" width="50%" />
+<img src="man/figures/README-unnamed-chunk-4-3.png" width="70%" style="display: block; margin: auto;" />
 
 ### 2. `replace_missing_with_na()`
 
@@ -208,8 +210,8 @@ that:
 
 1.  **The variables have labels**.  
     This allows information that is typically not encoded in the
-    variable name, such as units or more detailed and human readable
-    text, to be associated with each data column.
+    variable name, such as units or more detailed human readable text,
+    to be associated with each data column.
 
 2.  **The numeric values of categorical variables have labels**.  
     For variables reported as categorical and coded as numbers, it is
@@ -253,7 +255,11 @@ str(df_stata)
 #>  $ cholesterol_level      : dbl+lbl [1:10] 1, 3, 1, 2, 3, 2, 1, 1, 3, 2
 #>    ..@ labels: Named num  1 2 3
 #>    .. ..- attr(*, "names")= chr [1:3] "1" "2" "3"
+```
 
+Finally, you can save the file using the `haven` package:
+
+``` r
 # save the file in STATA format
-# haven::write_dta(df_stata, "data/2020-11-04_df_stata.dta")
+haven::write_dta(df_stata, "data/2020-11-04_df_stata.dta")
 ```

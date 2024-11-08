@@ -9,7 +9,8 @@ knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>",
   fig.path = "man/figures/README-",
-  out.width = "50%"
+  out.width = "70%",
+  fig.align = "center"
 )
 data(df)
 data(dict_df)
@@ -17,7 +18,7 @@ data(df_missing)
 data(dict_df_missing)
 ```
 
-# CohortLabeleR
+# CohortLabeleR <img src="logo.png" align="right" height="150"/>
 
 <!-- badges: start -->
 [![Lifecycle: experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html#experimental)
@@ -40,7 +41,8 @@ devtools::install_github("StringhiniLab/CohortLabeleR")
 
 This package consists of three functions. 
 
-### 1. `recode_vars()`. 
+### 1. `recode_vars()`
+
 Many datasets, such as CLSA, use numeric codes for categorical variables. This can make it harder to label axes when you want to produce many plots or to interpret the data at a glance. 
 This function replaces all numeric category values in the data frame with their corresponding labels, making the data easier to read and visualize.
 For example, if we want to plot the last three variables of this dataset:
@@ -129,7 +131,7 @@ colMeans(is.na.data.frame(df_missing_NA))*100
 To open a database in a format compatible with STATA, it is advisable that:
 
 1. **The variables have labels**.  
-    This allows information that is typically not encoded in the variable name, such as units or more detailed and human readable text, to be associated with each data column.
+    This allows information that is typically not encoded in the variable name, such as units or more detailed human readable text, to be associated with each data column.
     
 2. **The numeric values of categorical variables have labels**.  
     For variables reported as categorical and coded as numbers, it is possible to assign labels. This way, it is easy to visualize what each category level represents in STATA.
@@ -150,8 +152,12 @@ df_stata <- label_df_for_STATA(dataset = df,
 
 # You can recognize the variable labels (as attributes) and code labels (as labels) when checking the data frame structure
 str(df_stata)
+```
 
+Finally, you can save the file using the `haven` package:
+
+```{r, eval = FALSE}
 # save the file in STATA format
-# haven::write_dta(df_stata, "data/2020-11-04_df_stata.dta")
+haven::write_dta(df_stata, "data/2020-11-04_df_stata.dta")
 ```
 
