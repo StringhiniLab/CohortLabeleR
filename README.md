@@ -1,24 +1,24 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-# STATAtransfer
+# CohortLabeleR
 
 <!-- badges: start -->
 <!-- badges: end -->
 
-STATAtransfer provides functions to easily add STATA-style variable and
+CohortLabeleR provides functions to easily add STATA-style variable and
 cell labels to entire datasets in R. It also includes tools for quick
-variable recoding, making it easier to work with labeled data and
-streamline workflows between STATA and R.
+variable recoding, making it easier to work with categorical numeric
+variables commonly found in longitudinal cohort studies.
 
 ## Installation
 
-You can install the development version of STATAtransfer from
+You can install the development version of CohortLabeleR from
 [GitHub](https://github.com/) with:
 
 ``` r
 # install.packages("devtools")
-devtools::install_github("StringhiniLab/STATAtransfer")
+devtools::install_github("StringhiniLab/CohortLabeleR")
 ```
 
 ## Use
@@ -35,7 +35,7 @@ corresponding labels, making the data easier to read and visualize. For
 example, if we want to plot the last three variables of this dataset:
 
 ``` r
-library(STATAtransfer)
+library(CohortLabeleR)
 library(dplyr)
 library(ggplot2)
 library(purrr)
