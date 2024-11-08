@@ -43,20 +43,25 @@
 #' that are not categorical variables.
 #' You can specify them here.
 #' @param var_colname Name of the dictionary column containing the
-#' dataset variable names. To understand the dataset format,
-#'refer to the documentation for the `df_missing` dataset.
+#' dataset variable names.
+#' To understand the dictionary format,
+#' refer to the documentation for the `dict_df_missing` dataset.
 #' @param num_colname Name of the dictionary column containing
 #' the numeric codes for the categories.
-#' To understand the dataset format,
-#' refer to the documentation for the `df_missing` dataset.
+#' To understand the dictionary format,
+#' refer to the documentation for the `dict_df_missing` dataset.
 #' @param missing_colname Name of the dictionary column that
 #' is a binary indicator where a value of 1 represents a missing
 #' or unreported observation, and a value of 0
 #' represents a reported observation.
-#' To understand the dataset format,
-#' refer to the documentation for the `df_missing` dataset.
+#' To understand the dictionary format,
+#' refer to the documentation for the `dict_df_missing` dataset.
 #'
-#' @return
+#' @return The original dataset with NAs in all missing values for columns with
+#'  categorical numeric variables.
+#'
+#'
+#' @importFrom dplyr filter select where
 #' @export
 #'
 #' @examples

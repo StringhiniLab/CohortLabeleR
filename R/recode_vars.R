@@ -23,17 +23,19 @@
 #' that are not categorical variables. You can specify them here.
 #' @param var_colname Name of the dictionary column containing the
 #' dataset variable names. To understand the dataset format,
-#'  refer to the documentation for the `df` dataset.
+#'  refer to the documentation for the `dict_df` dataset.
 #' @param num_colname Name of the dictionary column containing
 #' the numeric codes for the categories. To understand the dataset format,
-#' refer to the documentation for the `df` dataset.
+#' refer to the documentation for the `dict_df` dataset.
 #' @param str_colname Name of the dictionary column containing the
 #' labels or categories as character strings. To understand the dataset
-#' format, refer to the documentation for the `df` dataset.
+#' format, refer to the documentation for the `dict_df` dataset.
 #'
 #' @return A data frame identical to the original dataset,
 #' but with numeric category values replaced by
 #' their corresponding label in the specified columns.
+#'
+#' @importFrom dplyr filter select pull
 #'
 #' @export
 #'
@@ -60,9 +62,9 @@ recode_vars <- function(dataset,
    for (i in vars_recode) {
 
      key <-  dictionary |>
-       dplyr::filter({{var_colname}} == i) |>
-       dplyr::select({{num_colname}},
-                     {{str_colname}})
+       filter({{var_colname}} == i) |>
+       select({{num_colname}},
+              {{str_colname}})
 
      data_recode2 <- data_recode[, i]
 
