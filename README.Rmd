@@ -28,6 +28,18 @@ CohortLabeleR provides functions to easily add STATA-style variable and cell lab
 
 ## Introduction
 
+Longitudinal or cohort studies are used to understand human health and how social and environmental factors influence it. These studies follow individuals over time across different cohorts, collecting data of interest from surveys and/or biological or environmental measurements.
+
+In terms of databases, these studies are usually reported with one file per cohort, accompanied by a dictionary that helps interpret the variables measured in each case. Although many variables are included (sometimes more than 200 per cohort), these datasets rarely exceed one gigabyte. The variables are often a mix of survey responses coded as integers in categorical variables and numeric values from biological measurements.
+
+Performing a thorough exploratory data analysis (EDA) of these datasets can be challenging due to the large number of variables. Therefore, using programming languages like R, which can automatize data analysis easily, opens up additional possibilities for EDA. **CohortLabeleR** is an R package with three functions that simplifies processing of categorical variables coded as numbers and also enables data transfer to STATA without loss of information.
+
+The first function, `recode_vars()`, allows you to replace numerical codes in categorical variables with text throughout the dataset. This not only enables data interpretation without repeatedly consulting the dictionary for each variable but also improves the interpretability of plots. This is particularly useful if you want to create automatically plots for each variable in the dataset for a first analysis of the data.
+
+The `replace_missing_with_na()` function replaces missing values with `NA`. This facilitates the visualization of missing values, that are usually coded in more than one level in the categorical numerical variables.
+
+Finally, `label_df_for_STATA()` adds labels to variable names and numeric values in categorical variables in a format that STATA can open directly, preserving information in the case of switching to STATA.
+
 ## Installation
 
 You can install the development version of CohortLabeleR from [GitHub](https://github.com/) with:
