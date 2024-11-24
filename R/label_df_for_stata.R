@@ -69,22 +69,34 @@ label_df_for_STATA <- function(dataset,
                                 var_colname,
                                 num_colname,
                                 str_colname){
-  # Variable names
+
+  # Extract variable names
   varnames <- dictionary |>
     select({{var_colname}}) |>
+    filter(
+      {{var_colname}} %in% colnames(dataset)) |> # I remove the variables that are not in the data
     unique() |>
     pull()
+
+  # The dictionary should not have more entries than the
+  # dataset for the loop
+  dictionary <-
+    dictionary |> filter(
+      {{var_colname}} %in% colnames(dataset))
 
   # STATA needs all the labels to read them correctly.
   # So, we add empty labels to the variables that are not
   # included in the dictionary, if any.
+    if(!setequal(colnames(dataset), varnames)){
   missing_vars <- tibble(
-    "{{var_colname}}" := c(setdiff(colnames(dataset), varnames)),
+    "{{var_colname}}" := c(setdiff(colnames(dataset),
+                                   varnames)),
     "{{var_label}}" := "")
 
   # add the missing variable labels to the dictionary
   dictionary <- dictionary |>
     bind_rows(missing_vars)
+    }
 
   # Assign variable labels
   for(i in varnames){
@@ -93,6 +105,10 @@ label_df_for_STATA <- function(dataset,
       filter({{var_colname}} == i) |>
       select({{var_label}}) |>
       unique()
+
+    if (length(varlabel) > 1) {
+      stop("Error: The dictionary has duplicated labels for at least one variable.")
+    }
 
    labelled::var_label(dataset[, i]) <- varlabel[[1]]
   }
@@ -106,9 +122,8 @@ label_df_for_STATA <- function(dataset,
     }
 
     # STATA only supports labeling with numeric variables.
-    if (!is.numeric(dataset[, i][[1]])) {
-      next
-    }
+    if (is.numeric(dataset[, i][[1]])) {
+
 
     var_dict <- dictionary |>
       filter({{var_colname}} == i)
@@ -118,15 +133,15 @@ label_df_for_STATA <- function(dataset,
       pull()
 
     str_dict <- var_dict |>
-      select({{num_colname}}) |>
+      select({{str_colname}}) |>
       pull()
 
   # create a named vector for the labels
   named_vector <- setNames(as.integer(num_dict),
                            str_dict)
 
-  dataset[ , i] <- labelled(dataset[ , i],
+  dataset[ , i] <- labelled(dataset[ , i][[1]],
                                  labels = named_vector)
-  }
+  }}
    return(dataset)
 }
