@@ -98,6 +98,39 @@ label_df_for_STATA <- function(dataset,
     bind_rows(missing_vars)
     }
 
+  # Assign value labels
+  # IMPORTANT! This step should be done before using labelled()
+  # because that function discard previous arguments
+  for(i in colnames(dataset)){
+
+    # Ignore numeric columns that shouldn't be labelled.
+    if (i %in% ignore_columns) {
+      next
+    }
+
+    # STATA only supports labeling with numeric variables.
+    if (is.numeric(dataset[, i][[1]])) {
+
+
+      var_dict <- dictionary |>
+        filter({{var_colname}} == i)
+
+      num_dict <- var_dict |>
+        select({{num_colname}}) |>
+        pull()
+
+      str_dict <- var_dict |>
+        select({{str_colname}}) |>
+        pull()
+
+      # create a named vector for the labels
+      named_vector <- setNames(as.integer(num_dict),
+                               str_dict)
+
+      dataset[ , i] <- labelled(dataset[ , i][[1]],
+                                labels = named_vector)
+    }}
+
   # Assign variable labels
   for(i in varnames){
 
@@ -113,35 +146,6 @@ label_df_for_STATA <- function(dataset,
    labelled::var_label(dataset[, i]) <- varlabel[[1]]
   }
 
-  # Assign code labels
-  for(i in colnames(dataset)){
 
-    # Ignore numeric columns that shouldn't be labelled.
-    if (i %in% ignore_columns) {
-      next
-    }
-
-    # STATA only supports labeling with numeric variables.
-    if (is.numeric(dataset[, i][[1]])) {
-
-
-    var_dict <- dictionary |>
-      filter({{var_colname}} == i)
-
-    num_dict <- var_dict |>
-      select({{num_colname}}) |>
-      pull()
-
-    str_dict <- var_dict |>
-      select({{str_colname}}) |>
-      pull()
-
-  # create a named vector for the labels
-  named_vector <- setNames(as.integer(num_dict),
-                           str_dict)
-
-  dataset[ , i] <- labelled(dataset[ , i][[1]],
-                                 labels = named_vector)
-  }}
    return(dataset)
 }

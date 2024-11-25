@@ -283,15 +283,18 @@ str(df_stata)
 #>   ..- attr(*, "label")= chr "Gender"
 #>  $ age                    : num  25 30 22 35 40 28 32 27 45 29
 #>   ..- attr(*, "label")= chr "Age (years)"
-#>  $ blood_pressure_category: dbl+lbl [1:10] 1, 2, 1, 3, 1, 4, 1, 2, 3, 1
+#>  $ blood_pressure_category: dbl+lbl [1:10] 1, 1, 1, 1, 1, 1, 1, 1, 1, 1
 #>    ..@ labels: Named num  1 2 3 4
-#>    .. ..- attr(*, "names")= chr [1:4] "1" "2" "3" "4"
-#>  $ glucose_level          : dbl+lbl [1:10] 1, 4, 1, 3, 1, 4, 1, 1, 4, 1
+#>    .. ..- attr(*, "names")= chr [1:4] "Normal" "Elevated" "Hypertension Stage 1" "Hypertension Stage 2"
+#>    ..@ label : chr "Blood pressure"
+#>  $ glucose_level          : dbl+lbl [1:10] 1, 1, 1, 1, 1, 1, 1, 1, 1, 1
 #>    ..@ labels: Named num  1 2 3 4
-#>    .. ..- attr(*, "names")= chr [1:4] "1" "2" "3" "4"
-#>  $ cholesterol_level      : dbl+lbl [1:10] 1, 3, 1, 2, 3, 2, 1, 1, 3, 2
+#>    .. ..- attr(*, "names")= chr [1:4] "Low" "Normal" "Pre-diabetes" "High"
+#>    ..@ label : chr "Glucose Level"
+#>  $ cholesterol_level      : dbl+lbl [1:10] 1, 1, 1, 1, 1, 1, 1, 1, 1, 1
 #>    ..@ labels: Named num  1 2 3
-#>    .. ..- attr(*, "names")= chr [1:3] "1" "2" "3"
+#>    .. ..- attr(*, "names")= chr [1:3] "Desirable" "Borderline" "High"
+#>    ..@ label : chr "Cholesterol Level"
 ```
 
 Finally, you can save the file using the `haven` package:
