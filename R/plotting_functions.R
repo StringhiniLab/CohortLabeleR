@@ -1,10 +1,10 @@
 #' Title
 #'
-#' @param var
-#' @param dataset
-#' @param dictionary
+#' @param var Variable
+#' @param dataset Dataset
+#' @param dictionary Dictionary
 #'
-#' @return
+#' @return Plot
 #' @export
 #'
 #' @examples
