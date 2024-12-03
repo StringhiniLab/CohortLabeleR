@@ -71,8 +71,15 @@ recode_vars <- function(dataset,
      keystr <- key |> select({{str_colname}}) |> pull()
      keynum <- key |> select({{num_colname}}) |> pull()
 
-     # match the
-     data_recode_var <- keystr[match(data_recode2, keynum)]
+     # If there are entries for this variable in the dictionary,
+     # replace the numbers with the label string.
+     # If there are not entries, leave the variable as it is.
+     # This is useful skip the numeric variables that aren't categorical.
+     # ADD TEST
+     data_recode_var <-
+       ifelse(data_recode2 %in% keynum,
+              keystr[match(data_recode2, keynum)],
+              data_recode2)
      dataset[, i]  <- data_recode_var
 
   }

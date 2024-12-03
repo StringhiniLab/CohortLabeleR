@@ -146,6 +146,5 @@ label_df_for_STATA <- function(dataset,
    labelled::var_label(dataset[, i]) <- varlabel[[1]]
   }
 
-
    return(dataset)
 }

@@ -20,6 +20,8 @@ data(dict_df_missing)
 
 # CohortLabeleR <img src="logo.png" align="right" height="150"/>
 
+THIS PACKAGE IS UNDER DEVELOPMENT
+
 <!-- badges: start -->
 [![Lifecycle: experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html#experimental)
 <!-- badges: end -->
